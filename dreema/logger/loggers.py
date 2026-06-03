@@ -4,7 +4,7 @@ This module provides convenience static logging methods with a shared
 Setup logger instance per filename.
 """
 
-from .setup import Setup
+from dreema.logger import Setup
 
 class Logger:
     """Factory that returns shared file-based logger instances."""

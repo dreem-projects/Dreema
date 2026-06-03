@@ -4,8 +4,8 @@ This module allows apps to register a custom async authentication handler
 and provides a shared authenticate() helper for request-level validation.
 """
 
-from helpers import Json
-from responses import SysCodes
+from dreema.helpers import Json
+from dreema.responses import SysCodes
 
 # Global auth handler - apps register their implementation
 _auth_handler = None

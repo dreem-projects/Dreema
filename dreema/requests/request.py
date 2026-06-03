@@ -1,7 +1,7 @@
 from datetime import datetime
-from helpers import Json
-from responses import SysCodes, SysMessages
-from files import FileParser
+from dreema.helpers import Json
+from dreema.responses import SysCodes, SysMessages
+from dreema.files import FileParser
 from urllib.parse import parse_qs
 import json
 from dreema.security import authenticate

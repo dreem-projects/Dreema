@@ -1,6 +1,6 @@
 """Route definition helpers for Dreema."""
 
-from helpers import Json
+from dreema.helpers import Json
 
 
 def route(path: str, methods, handler):

@@ -5,7 +5,7 @@ standard headers and CORS settings.
 """
 
 import json
-from helpers import settings
+from dreema.helpers import settings
 
 
 class Response:

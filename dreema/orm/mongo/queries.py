@@ -4,9 +4,9 @@ This module provides async CRUD operations for MongoDB collections,
 serializing BSON results into JSON-friendly responses.
 """
 
-from orm.events import EventsInterface
-from helpers.configurations import Json, settings
-from responses import SysCodes, SysMessages
+from dreema.orm.events import EventsInterface
+from dreema.helpers.configurations import Json, settings
+from dreema.responses import SysCodes, SysMessages
 from .querybuilder import QueryBuilder
 import json
 from bson.json_util import dumps

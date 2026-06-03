@@ -5,9 +5,9 @@ and return consistent response wrappers.
 """
 
 from typing import Any
-from orm.events import EventsInterface
-from helpers.configurations import Json, settings
-from responses import SysCodes, SysMessages
+from dreema.orm.events import EventsInterface
+from dreema.helpers.configurations import Json, settings
+from dreema.responses import SysCodes, SysMessages
 from .querybuilder import QueryBuilder
 
 

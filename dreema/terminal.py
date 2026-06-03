@@ -1,5 +1,9 @@
 import sys
-from helpers.cmd import Model, Controller, View
+from dreema.helpers.serialization import Json
+from dreema.helpers.cmd import CreateHandler, RunHandler
+
+
+
 
 """
     
@@ -8,62 +12,72 @@ from helpers.cmd import Model, Controller, View
         These files include Models, Views and Controllers
 """
 
-def createCommand():
-    pass
-
 # terminalParse function arguments to the the config
 def terminalParse():
-    result = {}
-    for arg in sys.argv:
-        split = arg.split("=")
-        if len(split) < 2:
-            continue
-        result[f"{split[0]}"] = split[1]
+    try:
+        argv = sys.argv
 
-    # lowercase the keys
-    result = {key.lower(): value for key, value in result.items()}
-    print(result)
+        if len(argv) < 2:
+            return "Error: No command provided", False
 
-    # create attribute validation
-    if result.get("create", None):
-        allowedtypes = ["view", "controller", "model"]
-        if result.get("create", None).lower() not in allowedtypes:
-            print("Error: Create options available are view, controller, and model")
-            return None
+        result = {
+            "command": argv[1].lower(),
+            "args": [],
+            "kwargs": {}
+        }
 
-    if not result.get("create", None):
-        print("Error: You must parse the create attribute")
-        return None
+        i = 2
+        isNamed = False
 
-    # class attributes
-    if not result.get("class", None):
-        print("Error: You must parse the class attribute")
-        return None
+        while i < len(argv):
+            token = argv[i]
 
-    # name of file
-    if not result.get("name", None):
-            print("Error: You must parse the name for the file")
-            return None
+            if token.startswith("--"):
+                isNamed = True
 
-    return result
+                key = token[2:]
+
+                if i + 1 >= len(argv):
+                    print(f"Error: Missing value for --{key}\nDefaulting to `True`")
+                    result["kwargs"][key] = True
+
+                else:
+                    result["kwargs"][key] = argv[i + 1]
+                
+                i += 2
+
+            else:
+                if isNamed:
+                    return f"Positional argument '{token}' cannot appear after named arguments", False
+
+                result["args"].append(token)
+                i += 1
+
+        return Json(result) , True
+    except:
+        return "Command not defined", False
+
+def main():
+    parser, success = terminalParse()
+
+    if not success:
+        print(parser)
+        sys.exit(1)
+    
+    # handle each command
+    if "create" in parser.get("command"):
+        CreateHandler(parser)
+        sys.exit(1)
+
+    if "run" in parser.get("command"):
+        RunHandler(parser)
+        sys.exit(1)
+    
 
 
 if __name__ == "__main__":
-    parser = terminalParse()
+    main()
+   
 
-    print(parser)
-    if parser:
-        #
-        if parser.get("create") == "model":
-            mod = Model()
-            mod.create(parser.get("class"), parser.get("name"))
 
-        #
-        if parser.get("create") == "controller":
-            cont = Controller()
-            cont.create(parser.get("class"), parser.get("name"))
 
-        #
-        if parser.get("create") == "view":
-            view = View()
-            view.create(parser.get("class"), parser.get("name"))

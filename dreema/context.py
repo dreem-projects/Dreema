@@ -1,8 +1,7 @@
-from dreema.orm.database import Database
-from dreema.redis.actions import Redis
-from dreema.routing import Dispatcher
-
 # Import registers if available (auth handler, custom codes, etc.)
+import os
+
+
 try:
     import registers
 except ImportError:
@@ -18,14 +17,12 @@ class AppContext:
         pass
 
     @classmethod
-    def redis(cls):
-        """Get or create Redis instance (singleton)"""
-        if not cls._redis:
-            cls._redis = Redis()
-        return cls._redis
+    def getAppPath(cls):
+        return os.environ.get('DREEMA_APP_PATH')
 
     @classmethod
     def db(cls):
+        from dreema.orm.database import Database
         """Get or create Database instance (singleton)"""
         if not cls._db:
             cls._db = Database()
@@ -39,15 +36,10 @@ class AppContext:
 
     @classmethod
     async def init(cls):
+        from dreema.orm.database import Database
+        from dreema.routing import Dispatcher
+
         """Initialize all connections at startup"""
-        # Initialize Redis
-        cls._redis = Redis()
-        rd = cls._redis.connect()
-        if rd.status < 0:
-            print(f'==> ❌ Redis connection failed: {rd.message}')
-        else:
-            print(f'==> ✔️ Redis connected')
-        
         # Initialize Database connection
         cls._db = Database()
         db = await cls._db.connect()
@@ -56,7 +48,15 @@ class AppContext:
         else:
             print(f'==> ✔️ Database connected')
 
-        # Initialize and cache routes
+        # Initialize and cache routes 
+        routePath = os.path.join(AppContext.getAppPath(), 'views', 'endpoints.py')
+        if os.path.exists(routePath):
+            import importlib.util
+            spec = importlib.util.spec_from_file_location('routes', routePath)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+
+            routes = getattr(module, 'routes', None)
         cls._routes = Dispatcher.initRoutes()
 
         # print(cls._routes)
@@ -66,8 +66,6 @@ class AppContext:
     @classmethod
     async def shutdown(cls):
         """Shutdown all connections at shutdown"""
-        if cls._redis:
-            await cls._redis.disconnect()
         if cls._db:
             await cls._db.disconnect()
         return cls

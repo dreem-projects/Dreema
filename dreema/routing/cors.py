@@ -1,9 +1,9 @@
 """CORS validation helper for Dreema routing."""
 
-from helpers import settings
-from requests import Request
-from responses import SysCodes, SysMessages
-from helpers import Json
+from dreema.helpers import settings
+from dreema.requests import Request
+from dreema.responses import SysCodes, SysMessages
+from dreema.helpers import Json
 
 
 class Cors:

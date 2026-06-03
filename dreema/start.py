@@ -7,7 +7,7 @@ Use:
 """
 
 import argparse
-import uvicorn
+# import uvicorn
 from dreema.helpers import settings
 import socket, sys
 
@@ -28,7 +28,6 @@ def findAvailablePort(userPort=8888, retries=10):
 def autoParse():
     parser = argparse.ArgumentParser(description="Start Dreema server")
 
-    
     parser.add_argument(
         "--port",
         type=int,

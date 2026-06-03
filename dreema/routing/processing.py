@@ -4,11 +4,10 @@ This module matches ASGI requests against view-defined routes, applies
 CORS checks, and forwards requests to the appropriate handler.
 """
 
-from views.endpoints import routes
-from requests import Request
-from responses import response
-from responses import SysCodes, StatusCodes, SysMessages
-from security import Encrypt
+from dreema.requests import Request
+from dreema.responses import response
+from dreema.responses import SysCodes, StatusCodes, SysMessages
+from dreema.security import Encrypt
 import traceback
 from .cors import Cors
 
@@ -19,7 +18,6 @@ class Dispatcher:
     ROUTEMAPS = {}
 
     def __init__(self, request: Request = None) -> None:
-        self.routes = routes
         self.request = request
 
     @staticmethod
@@ -61,7 +59,7 @@ class Dispatcher:
 
 
     @classmethod
-    def initRoutes(cls):
+    def initRoutes(cls, routes=[]):
         """Build and cache the route registry from configured view routes."""
         if cls.ROUTES:
             return cls.ROUTES

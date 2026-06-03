@@ -5,7 +5,7 @@ and provides helpers for running async jobs within Celery tasks.
 """
 
 from celery import Celery
-from helpers import getenv
+from dreema.helpers import getenv
 import asyncio
 
 REDIS_HOST = getenv("REDIS_HOST", "localhost")

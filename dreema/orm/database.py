@@ -5,13 +5,13 @@ backend, manages shared connection caching, and provides a common CRUD
 interface.
 """
 
-from helpers import settings, getenv, Json
-from orm.mongo import connection as MongoConnector
-from orm.mysql import connection as MySQLConnector
-from orm.mongo import queries as MongoQueries
-from orm.mysql import queries as MySQLQueries
-from responses import SysCodes, SysMessages
-from orm.events import EventsInterface
+from dreema.helpers import settings, getenv, Json
+from dreema.orm.mongo import connection as MongoConnector
+from dreema.orm.mysql import connection as MySQLConnector
+from dreema.orm.mongo import queries as MongoQueries
+from dreema.orm.mysql import queries as MySQLQueries
+from dreema.responses import SysCodes, SysMessages
+from dreema.orm.events import EventsInterface
 
 
 class Database(EventsInterface):

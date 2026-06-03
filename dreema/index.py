@@ -3,7 +3,7 @@ from dreema.requests import Request
 from dreema.responses import Response
 from dreema.responses import StatusCodes, SysCodes, SysMessages
 import traceback
-from context import AppContext
+from dreema.context import AppContext
 
 """
     Use:
@@ -14,7 +14,6 @@ from context import AppContext
 # dispatch the routes
 async def app(scope, receive, send):
     try:
-        
         # lifespan phase
         scp = scope['type']
         if scp == 'lifespan':
