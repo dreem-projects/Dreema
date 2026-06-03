@@ -1,116 +1,75 @@
-"""
-
-Use:
-    serves as the entry point for the application
-    Runs uvicorn as the main server and parse all
-    information required to index.py for processing
-"""
-
-import argparse
-# import uvicorn
+import os
+from pathlib import Path
+import uvicorn
 from dreema.helpers import settings
 import socket, sys
 
-# auto retry server
-def findAvailablePort(userPort=8888, retries=10):
-    port = userPort
-    for _ in range(retries):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            try:
-                s.bind(("0.0.0.0", port))
-                return port
-            except OSError:
-                port += 1
-    raise RuntimeError("No available ports found")
 
-
-# autoparse function arguments to the config
-def autoParse():
-    parser = argparse.ArgumentParser(description="Start Dreema server")
-
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=settings("SERVER_PORT", 8888),
-        help="Port to run the server on"
-    )
-
-    parser.add_argument(
-        "--host",
-        type=str,
-        default="127.0.0.1",
-        help="Host address"
-    )
-
-    parser.add_argument(
-        "--reload",
-        dest="reload",
-        action="store_true",
-        help="Enable auto-reload"
-    )
-
-    parser.add_argument(
-        "--no-reload",
-        dest="reload",
-        action="store_false",
-        help="Disable auto-reload"
-    )
-
-    parser.add_argument(
-        "--log-level",
-        type=str,
-        default="info",
-        help="Logging level"
-    )
-
-    parser.add_argument(
-        "--workers",
-        type=int,
-        default=4,
-        help="Number of worker processes"
-    )
-
-    # Set default AFTER defining reload flags
-    parser.set_defaults(
-        reload=settings("environment", "local") == "local"
-    )
-
-
-    args = parser.parse_args()
-
-    return {
-        "port": args.port,
-        "host": args.host,
-        "reload": args.reload,
-        "logLevel": args.log_level,
-        "workers": args.workers,
-    }
-
-if __name__ == "__main__":
-    try:
-        parser = autoParse()
-        port = findAvailablePort(int(parser['port']))
+class RunHandler:
+    def __init__(self, parser:object):
         
-        if port != parser['port']:
-            print(f"❌ Port {parser['port']} is already in use")
+        # make sure path is valid and endpoint.py exists
+        definedPath = '.'
+        if len(parser.args) > 0:
+            definedPath = parser.args[0]
+        elif parser.kwargs.get('path', None):
+            definedPath = parser.kwargs.get('path', None)
+        
+        path = os.path.abspath(definedPath)
 
-            res = input(f"👉 Enter 'y' to run with the next available port - {port} : ")
-            if res not in ['y', 'Y']:
-                sys.exit(1)
+        # check for endpoint.py in views of the path
+        if not os.path.exists(os.path.join(path,'views', 'endpoints.py')):
+            print("Error: Folder structure not defined for dreema")
+            return
+        
+        os.environ['DREEMA_APP_PATH'] = path
+        
+        # get the command to perform
+        self.params = {
+            "port": parser.kwargs.get('port', 8888),
+            "host": parser.kwargs.get('host', '127.0.0.1'),
+            "reload": parser.kwargs.get('reload', True),
+            "logLevel": parser.kwargs.get('log_level', 'info'),
+            "workers": parser.kwargs.get('workers', 1),
+        }
 
-        uvicorn.run(
-            "index:app",
-            port=port,
-            host=parser['host'],
-            workers=int(parser['workers']),
-            reload=False if str(settings("environment") or parser.get("reload")) == "live" else True,
-            log_level=parser["logLevel"],
-        )
 
-    except Exception as e:
-        print("Error starting the server: ", e)
-        sys.exit(1)
+        self.run()
+    
 
-# COMMAND TO START CELERY
-# celery -A dreema.scheduler.setup.scheduler worker --loglevel=info
-# celery -A dreema.scheduler.setup.scheduler beat --loglevel=info
+    def findAvailablePort(self,userPort=8888, retries=10):
+        port = userPort
+        for _ in range(retries):
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    s.bind(("0.0.0.0", port))
+                    return port
+                except OSError:
+                    port += 1
+        raise RuntimeError("No available ports found")
+
+    
+    def run(self):
+        try:
+            port = self.findAvailablePort(int(self.params['port']))
+            
+            if port != self.params['port']:
+                print(f"❌ Port {self.params['port']} is already in use")
+
+                res = input(f"👉 Enter 'y' to run with the next available port - {port} : ")
+                if res not in ['y', 'Y']:
+                    sys.exit(1)
+            
+            uvicorn.run(
+               f"dreema.index:app",
+                port=port,
+                host=self.params['host'],
+                workers=int(self.params['workers']),
+                reload= False if str(settings("environment")) == 'live' else True,
+                log_level=self.params["logLevel"],
+            )
+
+        except Exception as e:
+            print("Error starting the server: ", e)
+            sys.exit(1)
+

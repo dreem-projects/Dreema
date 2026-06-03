@@ -1,6 +1,6 @@
 import os, shutil
-from responses import SysCodes, SysMessages
-from helpers import Json
+from dreema.responses import SysCodes, SysMessages
+from dreema.helpers import Json
 
 """File utilities for Dreema.
 

@@ -1,3 +1,6 @@
+import os
+import sys
+
 from dreema.routing import Dispatcher
 from dreema.requests import Request
 from dreema.responses import Response
@@ -23,6 +26,9 @@ async def app(scope, receive, send):
                 if message['type'] == 'lifespan.startup':
                     print('======= Starting server =======')
                     # connect to database, cache routes, env etc
+                    project_root = os.getcwd() # The folder the user is in
+                    if project_root not in sys.path:
+                        sys.path.insert(0, project_root)
                     try:
                         await AppContext.init() 
                     except Exception as e: 

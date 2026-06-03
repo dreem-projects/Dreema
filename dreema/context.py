@@ -1,11 +1,9 @@
-# Import registers if available (auth handler, custom codes, etc.)
 import os
 
-
+# adding register to context if available
 try:
     import registers
 except ImportError:
-    # registers.py not created yet - that's okay
     pass 
 
 class AppContext:
@@ -41,26 +39,23 @@ class AppContext:
 
         """Initialize all connections at startup"""
         # Initialize Database connection
+        try:
+            import views.endpoints
+            routes = getattr(views.endpoints, 'routes', [])
+            cls._routes = Dispatcher.initRoutes(routes=routes)
+            print(f'==> ✔️ {len(cls._routes["statics"]) + len(cls._routes["dynamics"])} routes loaded')
+            
+        except Exception as e:
+            print("=> ❌ Dreema startup failed: unable to load application endpoints.")
+            raise e
+
+
         cls._db = Database()
         db = await cls._db.connect()
         if db.status < 0:
             print(f'==> ❌ Database connection failed: {db.message}')
         else:
             print(f'==> ✔️ Database connected')
-
-        # Initialize and cache routes 
-        routePath = os.path.join(AppContext.getAppPath(), 'views', 'endpoints.py')
-        if os.path.exists(routePath):
-            import importlib.util
-            spec = importlib.util.spec_from_file_location('routes', routePath)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-
-            routes = getattr(module, 'routes', None)
-        cls._routes = Dispatcher.initRoutes()
-
-        # print(cls._routes)
-        print(f'==> ✔️ {len(cls._routes["statics"]) + len(cls._routes["dynamics"])} routes loaded')
         return cls
 
     @classmethod

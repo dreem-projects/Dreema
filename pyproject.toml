@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["dreema"]
+
+[project.scripts]
+dreema = "dreema.terminal:main"
+
+[project]
+name = "dreema"
+version = "0.1.0"
+authors = [
+  { name="Raphael Djangmah" },
+]
+description = "A custom web framework"
+readme = "README.md"
+requires-python = ">=3.11.0"
+dependencies = [
+    "uvicorn<=0.32.0",
+    "aiomysql>=0.3.0",
+    "motor<=3.6.0",
+    "pymongo<=4.9.2",
+    "cryptography>=46.0.6",
+    "python-multipart>=0.0.22",
+    "redis<=5.2.1",
+    "bcrypt<=4.3.0",
+    "celery<=5.5.3",
+    "requests>=2.33.0",
+]

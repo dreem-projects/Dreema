@@ -1,7 +1,7 @@
 import uuid, os
 from dreema.helpers import settings
 from dreema.helpers import Json
-from responses.codes import SysCodes
+from dreema.responses.codes import SysCodes
 
 """
     Parse multipart request bodies and validate uploaded files.
