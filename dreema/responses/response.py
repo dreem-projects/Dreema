@@ -118,10 +118,6 @@ class Response:
             (b"content-length", str(len(body)).encode("latin-1")),
         ]
 
-
-        # Append custom headers safely
-
-
         # Append custom headers safely
         for key, value in headers.items():
             if isinstance(value, bytes):

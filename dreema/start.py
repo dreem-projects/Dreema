@@ -18,7 +18,7 @@ class RunHandler:
         path = os.path.abspath(definedPath)
 
         # check for endpoint.py in views of the path
-        if not os.path.exists(os.path.join(path,'views', 'endpoints.py')):
+        if not os.path.exists(os.path.join(path, 'endpoints.py')):
             print("Error: Folder structure not defined for dreema")
             return
         

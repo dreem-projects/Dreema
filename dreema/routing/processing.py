@@ -133,12 +133,15 @@ class Dispatcher:
                 
                 if not callable(handler):
                     return response(
+                        message=SysMessages.ENDPOINT_FUNC_FAIL,
                         status=SysCodes.ENDPOINT_FUNC_FAIL,
                         statuscode=StatusCodes.BAD_REQUEST,
                     )
 
-                res = await handler(self.request)
-                return res
+                try:
+                    return await handler(self.request)
+                except TypeError as e:
+                    return await handler()
 
             # Send a 404 response if no matching route is found
             return response(

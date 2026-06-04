@@ -40,8 +40,8 @@ class AppContext:
         """Initialize all connections at startup"""
         # Initialize Database connection
         try:
-            import views.endpoints
-            routes = getattr(views.endpoints, 'routes', [])
+            import endpoints
+            routes = getattr(endpoints, 'routes', [])
             cls._routes = Dispatcher.initRoutes(routes=routes)
             print(f'==> ✔️ {len(cls._routes["statics"]) + len(cls._routes["dynamics"])} routes loaded')
             
