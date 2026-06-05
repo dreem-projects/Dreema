@@ -16,7 +16,8 @@ class DBware:
         except:
             pass
 
-        self.self.getModel = None
+        
+        self.getModel = getModel
 
 
     """Handle model CRUD calls with request-friendly helper behavior."""
@@ -56,6 +57,6 @@ class DBware:
         model = self.getModel(model)
         return await model.update(filters, data, params=params)
     
-    async def read(self, model:str=None, filters:dict=None, params:dict=None):
+    async def read(self, model:str='', filters:dict=None, params:dict=None):
         model = self.getModel(model)
         return await model.read(filters=filters, params=params)

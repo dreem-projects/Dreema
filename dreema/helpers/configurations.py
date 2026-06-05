@@ -13,7 +13,7 @@ def loadenv():
         return _ENV_CACHE
     envdict = {}
     try:
-        cwd = os.getcwd()
+        cwd = os.environ.get('DREEMA_APP_PATH', '')
         path = os.path.join(cwd, ".env")
         if os.path.isfile(path):
             with open(path, "r", encoding="utf-8") as f:

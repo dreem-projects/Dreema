@@ -52,8 +52,8 @@ class RunHandler:
     def run(self):
         try:
             port = self.findAvailablePort(int(self.params['port']))
-            
-            if port != self.params['port']:
+            print(self.params)
+            if port != int(self.params['port']):
                 print(f"❌ Port {self.params['port']} is already in use")
 
                 res = input(f"👉 Enter 'y' to run with the next available port - {port} : ")
@@ -64,8 +64,8 @@ class RunHandler:
                f"dreema.index:app",
                 port=port,
                 host=self.params['host'],
+                reload= False if str(settings("environment")) == 'live' else (self.params["reload"] == "True"),
                 workers=int(self.params['workers']),
-                reload= False if str(settings("environment")) == 'live' else True,
                 log_level=self.params["logLevel"],
             )
 
