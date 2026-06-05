@@ -20,32 +20,6 @@ def setAuthHandler(handler):
     
     Parameters:
         handler: Async function that handles authentication
-    
-    Example:
-        from dreema.security import setAuthHandler
-        
-        async def myAuthHandler(request, *args, **kwargs):
-            # Extract types or any other params you need
-            types = kwargs.get('types', [])
-            
-            # Your authentication logic here
-            cookies = parseCookies(request)
-            user = await verifyUser(cookies, types)
-            
-            if user:
-                return Json({
-                    'data': user,
-                    'status': 1,
-                    'message': 'Authenticated'
-                })
-            
-            return Json({
-                'data': None,
-                'status': -1,
-                'message': 'Unauthorized'
-            })
-        
-        setAuthHandler(myAuthHandler)
     """
     global _auth_handler
     _auth_handler = handler
@@ -76,7 +50,7 @@ async def authenticate(request, *args, **kwargs):
         return Json({
             'data': None,
             'status': SysCodes.INVALID_CREDS,
-            'message': 'No authentication handler registered. Call setAuthHandler() in your app.'
+            'message': 'No authentication handler plugged. Register auth by setting setAuthHandler in plug.py.'
         })
     
     return await handler(request, *args, **kwargs)

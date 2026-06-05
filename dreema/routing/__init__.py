@@ -1,5 +1,5 @@
-from .clients import route, routegroup
+from .clients import route
 from .processing import Dispatcher
 from .cors import Cors
 
-__all__ = ['Dispatcher', 'route', 'routegroup', 'Cors']
+__all__ = ['Dispatcher', 'route', 'Cors']

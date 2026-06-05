@@ -67,7 +67,7 @@ class FileParser:
                 )
 
                 # save the content to a temporary file location
-        return partObj
+        return Json({'data':partObj, 'status':SysCodes.OP_SUCCESS, 'message':'File retrieved from request'})
 
     async def parseMultipart(self, body: bytes, content: bytes):
         boundary = content.split("boundary=")[-1].strip().encode()

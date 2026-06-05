@@ -1,11 +1,5 @@
 import os
 
-# adding register to context if available
-try:
-    import registers
-except ImportError:
-    pass 
-
 class AppContext:
     _redis = None
     _db = None
@@ -38,6 +32,13 @@ class AppContext:
         from dreema.routing import Dispatcher
 
         """Initialize all connections at startup"""
+
+        # import register
+        try:
+            import plug
+        except ImportError:
+            pass
+
         # Initialize Database connection
         try:
             import endpoints

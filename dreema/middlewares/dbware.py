@@ -6,12 +6,22 @@ automatic timestamp enrichment.
 
 from datetime import datetime
 from typing import Union
-from models._modelsList import getModel
 
 class DBware:
+
+    def __init__(self):
+
+        try:
+            from models._modelsList import getModel
+        except:
+            pass
+
+        self.self.getModel = None
+
+
     """Handle model CRUD calls with request-friendly helper behavior."""
     async def create(self, model:str=None, data:Union[list,dict]=None):
-        model = getModel(model)
+        model = self.getModel(model)
 
         if(isinstance(data, list)):
             for index,_ in enumerate(data):
@@ -29,7 +39,7 @@ class DBware:
     
     async def delete(self, model:str=None, filters:dict=None, params:dict=None):
          # use model to create and quickly update
-        model = getModel(model)
+        model = self.getModel(model)
         return await model.delete(filters, params=params)
     
     async def update(self, model:str, data:Union[list,dict], filters:dict=None, params:dict=None):
@@ -43,9 +53,9 @@ class DBware:
 
 
          # use model to create and quickly update
-        model = getModel(model)
+        model = self.getModel(model)
         return await model.update(filters, data, params=params)
     
     async def read(self, model:str=None, filters:dict=None, params:dict=None):
-        model = getModel(model)
+        model = self.getModel(model)
         return await model.read(filters=filters, params=params)

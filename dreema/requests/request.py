@@ -358,7 +358,11 @@ class Request:
             content = self.headers().get("content-type")
 
             if not content:
-                return Json({})
+                return Json({
+                    'data': None,
+                    'message': "No request body provided",
+                    'status': SysCodes.ATTR_MISSING,
+                })
 
             # Handle JSON
             if "json" in content:
@@ -373,7 +377,11 @@ class Request:
                 return result if raw else Json(result)
 
             # Unsupported content type
-            return Json({})
+            return Json({
+                    'data': None,
+                    'message': "Unsupported content type",
+                    'status': SysCodes.ATTR_MISSING,
+                })
 
         except Exception:
             return Json({})

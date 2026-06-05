@@ -9,6 +9,7 @@ from dreema.responses import response
 from dreema.responses import SysCodes, StatusCodes, SysMessages
 from dreema.security import Encrypt
 import traceback
+from dreema.helpers.serialization import Json
 from .cors import Cors
 
 
@@ -23,9 +24,10 @@ class Dispatcher:
     @staticmethod
     def getRoute(route):
         """Normalize a route descriptor and identify dynamic path parameters."""
+        route = route.json()
         path = route.path.rstrip("/").replace('//','/')
         parts = path.strip('/').split('/')
-        params = {'pathParams':[], 'handler': route.handler, 'method':route.get('method'), 'parts': [],  'id' : Encrypt.generateRandom(16,1) }
+        params = {'pathParams':[], 'handler': route.handler, 'method':route.method, 'parts': [],  'id' : Encrypt.generateRandom(16,1) }
 
         for index,part in enumerate(parts):
             if part.startswith(":"):

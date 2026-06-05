@@ -4,10 +4,36 @@ This module provides CLI-style helpers to generate basic skeleton
 files for models, controllers, and views.
 """
 # Force logging initialization before anything else
+from datetime import datetime
+import json
 import os
 import subprocess
 import shutil
 from pathlib import Path
+from  dreema.config import APP
+from dreema.helpers.serialization import Json
+
+class KwargsHandler:
+    def __init__(self, parser:object):
+        if(parser.kwargs.get('version', None)):
+            glb = APP.get("version")
+            print(f'Dreema Global: {glb}')
+            try:
+                path = os.path.abspath('.')
+                config = None
+                with open(f'{path}/.dreema.json', "r") as f:
+                    config = Json(json.load(f))
+                
+                print(f'Dreema Local : {config.version}')
+
+                if glb != config.version:
+                    print('⚠️ You are outdated: run `dreema update` to update to the latest version.')
+                else:
+                    print('✅ Updated version: You are all caught up')
+            except Exception as e:
+                print(f'❌ .dreema.json file not found in your folder directory')
+                
+
 
 class CreateHandler:
     def __init__(self, parser:object):
@@ -50,25 +76,53 @@ class CreateHandler:
 
         #   creating a project
         if cmd == 'project':
-            self.Project().create(parser.args[0])
+            self.Project(parser).create()
 
 
     class Project:
-        def __init__(self,):
-            pass
+        def __init__(self,parser:object):
+            self.name = parser.args[0]
+            self.mode = parser.kwargs.get('mode', 'full')
 
-        def create(self, name):
-            # 1. Path to your template inside the installed package
-            template_dir = Path(__file__).parent.parent / "template" 
-            destination = Path.cwd() / name
+        def create(self):
+            destination = Path.cwd() / (self.name if self.name != "." else "")
+            exists = os.path.exists(destination)
+            template = Path(__file__).parent.parent / "template"
+            src = template / self.mode
+            filecount = 0
+            # Walk through the template directory
+            for root,dir, files in os.walk(src):
+                rel_path = Path(root).relative_to(src)
+                dest_path = destination / rel_path
+                dest_path.mkdir(parents=True, exist_ok=True)
+
+                for file in files:
+                    src_file = Path(root) / file
+                    dest_file = dest_path / file
+                    
+                    # Only copy if the file does NOT exist in the destination
+                    if not dest_file.exists():
+                        filecount += 1
+                        shutil.copy2(src_file, dest_file)
+
+            # 
+            metadata = {
+                "version": APP["version"],
+                "date": datetime.now().strftime("%Y-%m-%d")
+            }
             
-            # 2. Copy the files
-            shutil.copytree(template_dir, destination)
-            
-            # 3. Initialize Git in the new project
-            subprocess.run(["git", "init"], cwd=destination)
-            
-            print(f"✅ : New Project '{name}' created and Git initialized!")
+            with open(destination / ".dreema.json", "w") as f:
+                json.dump(metadata, f, indent=4)
+
+            #  initialize git only if the folder didn't exists before
+            if filecount:
+                print(f'✅ {filecount} File copied')
+            else:
+                print('Files updated')
+                
+            if not exists:
+                subprocess.run(["git", "init"], cwd=destination)
+                print(f"✅ : New Project {self.name if self.name != '.' else ''} created and Git initialized!")
 
 
     class Model:

@@ -7,5 +7,5 @@ class SampleModel(database.Database):
 
      # system uses default connection type if not specified
     def __init__(self, connection="default"):
-        super().__init__(type, connection)
+        super().__init__(connection=connection)
         self.setTable(self.tablename)
