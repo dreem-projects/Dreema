@@ -17,14 +17,17 @@
   • Structure • Consistency • AI-ready systems
 </p>
 
-<div align="left" style="max-width:720px; margin:0 auto; font-size:1.1rem; line-height:1.7; color:#555;">
-AI is great at code generation, but the systems it builds are messy and unreliable.
-The problem isn’t the AI but the frameworks. <b>WHY?</b> Because frameworks are foundations that weren’t originally designed for AI-assisted development or predictable automation.
-<br /> <br />
-
-<b>Dreema is a Python Framework that solves this problem.</b>
-<br />
-
+<div align="left" style="max-width:720px; margin:0 auto; font-size:1.1rem; line-height:1.7;">
+<p>
+    <b>The current bottleneck in AI development isn't the AI—it’s the architecture.</b>
+  </p>
+  <p>
+    While Large Language Models are exceptional at generating code, the systems they produce are often fragile, inconsistent, and difficult to maintain. Traditional frameworks were built for human-centric workflows, relying on deep tribal knowledge, complex boilerplate, and hidden side effects that confuse AI agents.
+  </p>
+  <p>
+    When frameworks prioritize "magic" over predictability, AI agents struggle to generate code that is production-ready.
+  </p>
+  
 </div>
 </div>
 
@@ -34,10 +37,15 @@ The problem isn’t the AI but the frameworks. <b>WHY?</b> Because frameworks ar
   Why Dreema?
 </h1>
 
-The bottleneck in modern AI-assisted development isn't the AI—it's the framework. Existing tools were built for manual coding, not the predictable, structured environments that AI agents require.
+<p>
+    <b>Dreema is a paradigm shift:</b> A Python framework architected specifically to be <i>AI-native</i>. By enforcing strict, predictable design patterns and standardized interfaces, Dreema ensures that AI-generated code is robust, modular, and natively compatible with automated workflows.
+  </p>
+  <p>
+    <b>Stop fighting your framework. Start building with a foundation designed for the future of development using:
+    </b>
+  </p>
 
-**Dreema** solves this by delivering a production-ready, **batteries-included** ecosystem:
-
+- **Dreem's batteries-included** ecosystem featuring ORMs, Middlewares, Plugs, etc.
 - **Enforced Architecture:** Replaces flexible chaos with a deterministic MVC structure.
 - **Universal Error Contract:** Delivers standardized responses that AI agents can reliably parse, debug, and self-heal.
 - **Native AI tools:** Provides developers with AI tools for better developer experience.
@@ -49,7 +57,6 @@ The bottleneck in modern AI-assisted development isn't the AI—it's the framewo
   Our Vision
 </h1>
 Dreema aims to redefine backend development by prioritizing both human intuition and AI efficiency. We provide the tools and structured architecture needed to build, maintain, and scale reliable backends that work seamlessly for both developers and AI agents.
----
 
 <h1 style="margin-top: 10px; font-weight:600; font-size: 1.2rem; color:#563d7c;">
   Our Core Architecture
@@ -57,8 +64,8 @@ Dreema aims to redefine backend development by prioritizing both human intuition
 
 <div style=" font-size:0.8rem; line-height:1.7;">
 
-<h3 style="color:#563d7c;">1 &mdash; Enforced MVC Architecture</h3>
-FastAPI is excellent for prototypes, but it lacks structural enforcement — leading to spaghetti code at scale. Dreema mandates a clean <b>Model-View-Controller</b> structure from day one. <br />
+<h3 style="color:#563d7c;">1.  Enforced MVC Architecture</h3>
+FastAPI is excellent for prototypes, but it lacks structural enforcement — leading to spaghetti code at scale. Dreema mandates a clean <b>Model-View-Controller</b> structure from day one leading to
 <b>Zero Guesswork and AI Efficient </b> as developers and AI agents know where to look.
 
 </div >
@@ -66,7 +73,7 @@ FastAPI is excellent for prototypes, but it lacks structural enforcement — lea
 
 ---
 
-<h3 style="color:#563d7c;">2 &mdash; The Universal Response Contract</h3>
+<h3 style="color:#563d7c;">2 . The Universal Response Contract</h3>
 
 System fragility is the enemy of automation. Dreema implements a strict, fixed response schema for every request — internal or external. This provides a predictable contract that AI agents can rely on to diagnose, debug, and self-heal.
 
@@ -105,7 +112,7 @@ No controller-specific error formats. No guessing what shape a failure takes. Ev
 
 ---
 
-<h3 style="color:#563d7c;">3 &mdash; Unified ORM</h3>
+<h3 style="color:#563d7c;">3 . Unified ORM</h3>
 
 Stop scaffolding database connections by hand. Dreema includes a powerful, database-agnostic ORM that lets you switch between storage engines.
 
@@ -115,32 +122,96 @@ Stop scaffolding database connections by hand. Dreema includes a powerful, datab
 
 ---
 
-<h1 style="margin-top: 10px; font-weight:600; font-size: 1.2rem; color:#563d7c;">
+<h1 style="margin-top: 10px; font-weight:600; font-size: 1.5rem; color:#563d7c;">
   Demo: Perform CRUD in 60seconds
 </h1>
 
-Let's build a user creation endpoint from scratch.
-
-**Step 1 &mdash; Clone and install**
+**Setup and Installation**
 
 ```bash
-git clone https://github.com/dreem-projects/Dreema.git
-cd dreema
-pip install -r requirements.txt
+# setup and activate virtual environment
+python -m venv venv
+source venv/bin/activate
+
+#install dreema
+pip install dreema
+
 ```
 
-**Step 2 &mdash; Create your model**
+### Choose Your Style
+
+<div>Building high-performance endpoints with Dreema is designed to be intuitive. Choose the approach that fits your project needs.</div>
+
+## Style A - Core Mode (Minimalistic)
+
+Best for microservices or simple API routes. This setup provides a single entry point for all your logic.
+
+⚠️ Warning: Not recommended for production; lacks the modularity needed for maintainable, scalable systems.
+
+**Create a project**
+
+```bash create dreema project: set --mode to core or full
+dreema create project_name --mode core
+cd project_name
+```
+
+**Create and define routes inside endpoint.py**
+
+```python
+
+  from dreema.routing import route
+  from controllers.usersController import UsersController
+
+  # routes can also be defined this way
+  async def create():
+      return {
+          'data': {
+              'name': 'Kweku Dreem'
+          },
+          "message": "Message sent",
+          "status": 20
+      }
+
+  async def welcome():
+      return "Welcome to Dreema"
+
+  # register created route
+  routes = [
+          # creating single routes
+          route.get('/welcome', welcome),
+          route.post('/create', create),
+  ]
+
+```
+
+**Start the server**
+
+```bash
+  dreema run .
+```
+
+## Style B - Installing with full mode (Recommended)
+
+**Step 1 &mdash; Create your model**
+
+```bash
+dreema create-model userModel
+```
 
 ```python
 # app/models/user.py
 from dreema.orm import database
 
-class UsersModel(database.Database):
-    #specify table or document name here
+class UserModel(database.Database):
+    # change tablename here
     tablename = 'users'
 ```
 
 **Step 2 &mdash; Create your controller**
+
+```bash
+dreema create-controller usersController
+```
 
 ```python
 # app/controllers/users.py
@@ -171,7 +242,7 @@ class UsersController:
       return user
 ```
 
-**Step 2 &mdash; Define your view**
+**Step 2 &mdash; Register endpoint**
 
 ```python
 # app/view/endpoint.py
@@ -185,14 +256,14 @@ import controllers.users as UsersController
 """
 routes = [
         # creating single routes
-        route(path="create-user", methods=["POST"], handler=UsersController.createUser),
-]
+        route.post('/create-user', UsersController.createUser),
+  ]
 ```
 
 **Step 5 &mdash; Start the server**
 
 ```bash
-python start.py
+  dreema run .
 ```
 
 **Step 6 &mdash; Call the endpoint**
@@ -231,10 +302,10 @@ Routing, validation, ORM, and response formatting — all handled, all consisten
 
 <img src="https://img.shields.io/badge/Dreema-Convention%20Over%20Configuration-563d7c?style=for-the-badge" alt="Convention Over Configuration" />
 
-<p style="margin-top:1rem;">
+<!-- <p style="margin-top:1rem;">
 <a href="https://dreem-projects.github.io/dq-docs/v1/" style="color:#563d7c; font-weight:bold;">View Full Documentation</a>
 &nbsp;·&nbsp;
 <a href="v1/" style="color:#563d7c; font-weight:bold;">Current Version (v1)</a>
-</p>
+</p> -->
 
 </div>

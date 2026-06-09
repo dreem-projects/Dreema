@@ -1,6 +1,7 @@
 [project]
 name = "dreema"
 version = "0.1.0"
+url = "https://github.com/dreem-projects/Dreema.git"
 description = "A high-speed, production-proven Python backend framework with built-in ORM, security, and native AI integration support."
 authors = [
   { name = "Raphael Djangmah", email = "ordjangmah@gmail.com" }
@@ -19,18 +20,19 @@ classifiers = [
 ]
 
 dependencies = [
-    "uvicorn>=0.30.0,<=0.32.0",
-    "aiomysql>=0.3.0",
-    "motor>=3.0.0,<=3.6.0",
-    "pymongo>=4.0.0,<=4.9.2",
-    "python-multipart>=0.0.22",
-    "bcrypt>=4.0.0,<=4.3.0",
-    "celery>=5.0.0,<=5.5.3",
-    "requests>=2.33.0",
+    "uvicorn>=0.32,<1.0",
+    "aiomysql>=0.3,<1.0",
+    "motor>=3.6,<4.0",
+    "pymongo>=4.9,<5.0",
+    "python-multipart>=0.0.22,<1.0",
+    "bcrypt>=4.3,<5.0",
+    "celery>=5.5,<6.0",
+    "requests>=2.33,<3.0"
 ]
 
 [project.scripts]
 dreema = "dreema.terminal:main"
 
-[tool.setuptools]
-packages = ["dreema"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dreema*"]

@@ -1,9 +1,8 @@
-from datetime import datetime
 from dreema.orm import database
 
-class SampleModel(database.Database):
+class UsersModel(database.Database):
     #specify table or document name here
-    tablename = 'dreema_sample' 
+    tablename = 'users_table' 
 
      # system uses default connection type if not specified
     def __init__(self, connection="default"):

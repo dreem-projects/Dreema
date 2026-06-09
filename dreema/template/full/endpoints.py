@@ -4,9 +4,10 @@
 """
 
 from dreema.routing import route
-from controllers.sampleController import SampleController
+from controllers.usersController import UsersController
  
 
+# routes can also be defined this way
 async def create():
     return {
          'data': {
@@ -19,15 +20,15 @@ async def create():
 # routes
 routes = [
         # creating single routes
-        route.get('/welcome', SampleController.welcome),
+        route.get('/welcome', UsersController.welcome),
         route.post('/create', create),
 
         # create grouped routes
         route.group('/users', [
-            route.get('/read', SampleController.welcome),
-            route.post('/create', SampleController.sampleRead)
+            route.get('/read', UsersController.welcome),
+            route.post('/create', UsersController.testRead)
         ]),
 
         # routes with multiple methods
-        route(path="/", methods=["GET", "POST"], handler=SampleController.welcome),
+        route(path="/", methods=["GET", "POST"], handler=UsersController.welcome),
 ]

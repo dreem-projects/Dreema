@@ -1,6 +1,6 @@
-from .sampleModel import SampleModel
+from .usersModel import UsersModel
 MODELS = {
-        'sample': SampleModel(),
+        'users': UsersModel(),
     }
 
 

@@ -1,29 +1,28 @@
 from dreema.requests import Request
 from dreema.responses import response
 from dreema.responses import SysCodes
-from models.sampleModel import SampleModel
+from models.usersModel import UsersModel
 
-class SampleController:
+class UsersController:
 
-    
     @staticmethod
     async def welcome(request: Request):
         return response(message="Setup completed", status=SysCodes.SETUP_COMPLETED)
 
     @staticmethod
-    async def sampleCreate(request: Request):
+    async def testCreate(request: Request):
         body = await request.body()
-        mod = SampleModel()
+        mod = UsersModel()
         return await mod.create(body.data)
 
     @staticmethod
-    async def sampleRead(request: Request):
+    async def testRead(request: Request):
         # read all samples  
-        mod = SampleModel()
+        mod = UsersModel()
         return await mod.read(params={'include':['name'], 'limit':5, 'skip':1, 'sort': 1, 'sortfield':'name'})
 
     @staticmethod
-    async def sampleUpdate(request: Request):
+    async def testUpdate(request: Request):
         body = await request.trimApplyRules({
             'id': 'required',
             'name':'required',
@@ -33,11 +32,11 @@ class SampleController:
         if body.status < 0:
             return response(body, custom=True)
 
-        mod = SampleModel()
+        mod = UsersModel()
         return await mod.update(filters={'id':body.data.id}, data={'name':body.data.name})
 
     @staticmethod
-    async def sampleDelete(request: Request):
+    async def testDelete(request: Request):
         body = await request.trimApplyRules({
             'id': 'required',
         }, request.params()) # id on request parameter
@@ -45,5 +44,5 @@ class SampleController:
         if body.status < 0:
             return response(body, custom=True)
 
-        mod = SampleModel()
+        mod = UsersModel()
         return await mod.delete(filters={'id':body.data.id})

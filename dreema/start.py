@@ -51,7 +51,6 @@ class RunHandler:
     def run(self):
         try:
             port = self.findAvailablePort(int(self.params['port']))
-            print(self.params)
             if port != int(self.params['port']):
                 print(f"🔴 Port {self.params['port']} is already in use")
 
