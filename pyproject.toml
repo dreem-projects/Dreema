@@ -1,7 +1,6 @@
 [project]
 name = "dreema"
 version = "0.1.0"
-url = "https://github.com/dreem-projects/Dreema.git"
 description = "A high-speed, production-proven Python backend framework with built-in ORM, security, and native AI integration support."
 authors = [
   { name = "Raphael Djangmah", email = "ordjangmah@gmail.com" }
