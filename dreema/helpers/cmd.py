@@ -12,6 +12,8 @@ import shutil
 from pathlib import Path
 from  dreema.config import APP
 from dreema.helpers.serialization import Json
+import subprocess, sys, requests
+
 
 class KwargsHandler:
     def __init__(self, parser:object):
@@ -27,11 +29,11 @@ class KwargsHandler:
                 print(f'Dreema Local : {config.version}')
 
                 if glb != config.version:
-                    print('⚠️ You are outdated: run `dreema update` to update to the latest version.')
+                    print('🟡 You are outdated: run `dreema update` to update to the latest version.')
                 else:
-                    print('✅ Updated version: You are all caught up')
+                    print('🟢 Updated version: You are all caught up')
             except Exception as e:
-                print(f'❌ .dreema.json file not found in your folder directory')
+                print(f'🔴 .dreema.json file not found in your folder directory')
                 
 
 class CreateHandler:
@@ -115,13 +117,13 @@ class CreateHandler:
 
             #  initialize git only if the folder didn't exists before
             if filecount:
-                print(f'✅ {filecount} File copied')
+                print(f'🟢 {filecount} File copied')
             else:
                 print('Files updated')
                 
             if not exists:
                 subprocess.run(["git", "init"], cwd=destination)
-                print(f"✅ : New Project {self.name if self.name != '.' else ''} created and Git initialized!")
+                print(f"🟢 : New Project {self.name if self.name != '.' else ''} created and Git initialized!")
 
 
     class Model:
@@ -147,7 +149,7 @@ class {cls}(database.Database):
                 with open(f"models/{filename[i]}.py", "w") as f:
                     f.write(self.template(cls[i]))
 
-            print(f"✅ Model{'s' if len(cls) > 1 else ''} created")
+            print(f"🟢 Model{'s' if len(cls) > 1 else ''} created")
 
     class Controller:
         def template(self, cls):
@@ -171,7 +173,7 @@ class {cls}:
                     f.write(self.template(cls[i]))
                     f.close()
 
-            print(f"✅ Controller{'s' if len(cls) > 1 else ''} created")
+            print(f"🟢 Controller{'s' if len(cls) > 1 else ''} created")
 
     class View:
         def template(self, cls):
@@ -190,5 +192,73 @@ class {cls}:
                     f.write(self.template(cls[i]))
                     f.close()
 
-            print(f"✅ View{'s' if len(cls) > 1 else ''} created")
+            print(f"🟢 View{'s' if len(cls) > 1 else ''} created")
 
+class CommandsHandler:
+    def __init__(self, parser:object):
+        # get the command to perform
+        command = parser.command
+        allowedCmd = ["upgrade"]
+        if command not in allowedCmd:
+            print(f'🔴 Erorr: Action {parser.command} not defined')
+            return 
+        
+
+        if command == "upgrade":
+                self.upgrade()
+
+    def pipUpdate(self):
+        """
+        Checks for the latest version on PyPI and performs an 
+        in-place pip upgrade within the current virtual environment.
+        """
+
+        # 1. Fetch latest version
+        try:
+            url = f"https://pypi.org/pypi/{APP.get('name', 'dreema')}/json"
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            latest = response.json()["info"]["version"]
+        except Exception as e:
+            print(f"🔴 Failed to check for updates: {e}")
+            return
+
+        # 2. Perform the upgrade using the current interpreter
+        print(f"🟡 Upgrading Dreema to version {latest}...")
+        try:
+            subprocess.check_call([
+                sys.executable, "-m", "pip", "install", "--upgrade",  APP.get('name', 'dreema')
+            ])
+            print(f'🟢 {APP.get("name", "dreema")} updated to the latest version - {latest}')
+        except subprocess.CalledProcessError:
+            print("🔴 Error: Could not update. Check your network or permissions.")
+                
+    def upgrade(self):
+        glb = APP.get("version")
+        try:
+                path = os.path.abspath('.')
+                config = None
+                with open(f'{path}/.dreema.json', "r") as f:
+                    config = Json(json.load(f))
+                
+
+                if glb != config.version:
+                    usr = config.version
+                    print(f'✔️ Your current Dreema version: {usr}')
+                    print(f'✔️ Upgrading to the latest version: {glb}')
+                    user_v = int(usr.split('.')[0])
+                    glb_v = int(glb.split('.')[0])
+
+                    # check for when user version is greater than global version
+                    if(user_v > glb_v):
+                        print(f'🔴 Invalid version in .dreema.json as local version is ahead of global version')
+                    else:
+                        breakTrace = APP.get("templateBreakTrace")[user_v:glb_v]
+                        if any(x is False for x in breakTrace):
+                            print(f'🔴 Updated version v{glb} contains breaking changes of dreema.\nCheck the documentation to make the necessary migrations')
+                        else:
+                            self.pipUpdate()
+                else:
+                    print(f'🟢 Updated version: Dreema running on the latest version {glb}')
+        except Exception as e:
+                print(f'🔴 .dreema.json file not found in your folder director. To update dreema globally without affecting specific codebases, run `pip install --upgrade dreema `')

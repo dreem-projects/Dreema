@@ -1,31 +1,36 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+[project]
+name = "dreema"
+version = "0.1.0"
+description = "A high-speed, production-proven Python backend framework with built-in ORM, security, and native AI integration support."
+authors = [
+  { name = "Raphael Djangmah", email = "ordjangmah@gmail.com" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.11.0"
+keywords = ["async", "web", "framework", "ai", "orm", "backend"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+]
 
-[tool.setuptools]
-packages = ["dreema"]
+dependencies = [
+    "uvicorn>=0.30.0,<=0.32.0",
+    "aiomysql>=0.3.0",
+    "motor>=3.0.0,<=3.6.0",
+    "pymongo>=4.0.0,<=4.9.2",
+    "python-multipart>=0.0.22",
+    "bcrypt>=4.0.0,<=4.3.0",
+    "celery>=5.0.0,<=5.5.3",
+    "requests>=2.33.0",
+]
 
 [project.scripts]
 dreema = "dreema.terminal:main"
 
-[project]
-name = "dreema"
-version = "0.1.0"
-authors = [
-  { name="Raphael Djangmah" },
-]
-description = "A custom web framework"
-readme = "README.md"
-requires-python = ">=3.11.0"
-dependencies = [
-    "uvicorn<=0.32.0",
-    "aiomysql>=0.3.0",
-    "motor<=3.6.0",
-    "pymongo<=4.9.2",
-    "cryptography>=46.0.6",
-    "python-multipart>=0.0.22",
-    "redis<=5.2.1",
-    "bcrypt<=4.3.0",
-    "celery<=5.5.3",
-    "requests>=2.33.0",
-]
+[tool.setuptools]
+packages = ["dreema"]

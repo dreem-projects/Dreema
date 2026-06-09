@@ -2,10 +2,8 @@ APP = {
   "name": "dreema",
   "version": "0.1.0",
   "description": "Dreema is a powerful and flexible framework for building web applications with ease. It provides a robust set of tools and features to help developers create scalable and maintainable applications quickly.",
-  "author": "Raphaël Djangmah",
+  "author": "Raphal Djangmah",
   "license": "MIT",
   "requires-python": ">=3.11.0",
-  "templateBreakTrace": {
-    1: False,
-  }
+  "templateBreakTrace": [False]
 }

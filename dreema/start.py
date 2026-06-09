@@ -7,7 +7,6 @@ import socket, sys
 
 class RunHandler:
     def __init__(self, parser:object):
-        
         # make sure path is valid and endpoint.py exists
         definedPath = '.'
         if len(parser.args) > 0:
@@ -54,9 +53,9 @@ class RunHandler:
             port = self.findAvailablePort(int(self.params['port']))
             print(self.params)
             if port != int(self.params['port']):
-                print(f"❌ Port {self.params['port']} is already in use")
+                print(f"🔴 Port {self.params['port']} is already in use")
 
-                res = input(f"👉 Enter 'y' to run with the next available port - {port} : ")
+                res = input(f"🟡 Enter 'y' to run with the next available port - {port} : ")
                 if res not in ['y', 'Y']:
                     sys.exit(1)
             

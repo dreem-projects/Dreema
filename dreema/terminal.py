@@ -1,7 +1,7 @@
 import sys
 from .start import RunHandler
 from dreema.helpers.serialization import Json
-from dreema.helpers.cmd import CreateHandler, KwargsHandler
+from dreema.helpers.cmd import CommandsHandler, CreateHandler, KwargsHandler
 
 
 
@@ -36,7 +36,6 @@ def terminalParse():
                 key = token[2:]
 
                 if i + 1 >= len(argv):
-                    # print(f"Error: Missing value for --{key}\nDefaulting to `True`")
                     result["kwargs"][key] = True
 
                 else:
@@ -46,7 +45,7 @@ def terminalParse():
 
             else:
                 if isNamed:
-                    return f"Positional argument '{token}' cannot appear after named arguments", False
+                    return f"🔴 Positional argument '{token}' cannot appear after named arguments", False
 
                 result["args"].append(token)
                 i += 1
@@ -68,14 +67,18 @@ def main():
         CreateHandler(parser)
         sys.exit(0)
 
-    if "run" in parser.get("command"):
-        RunHandler(parser)
+    if parser.get("command") in ["run", 'upgrade']:
+        if parser.get('command') == 'run':
+            RunHandler(parser)
+        if parser.get('command') == 'upgrade':
+            CommandsHandler(parser)
         sys.exit(0)
 
     if not parser.get('command',None) and parser.get('kwargs',{}):
         KwargsHandler(parser)
         sys.exit(0)
-
+    
+    print('🔴 Command not defined')
     
 
 
