@@ -18,7 +18,7 @@ class RunHandler:
 
         # check for endpoint.py in views of the path
         if not os.path.exists(os.path.join(path, 'endpoints.py')):
-            print("Error: Folder structure not defined for dreema")
+            print("🔴 Error: Folder structure not defined for dreema")
             return
         
         os.environ['DREEMA_APP_PATH'] = path
@@ -45,7 +45,7 @@ class RunHandler:
                     return port
                 except OSError:
                     port += 1
-        raise RuntimeError("No available ports found")
+        raise RuntimeError("🔴 No available ports found")
 
     
     def run(self):
@@ -69,6 +69,6 @@ class RunHandler:
             )
 
         except Exception as e:
-            print("Error starting the server: ", e)
+            print("🔴 Error starting the server: ", e)
             sys.exit(1)
 

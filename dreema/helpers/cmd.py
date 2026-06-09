@@ -44,11 +44,11 @@ class CreateHandler:
 
         # validate the command
         if commands[0] not in allowedCmd:
-            print(f'Erorr: Action {parser.command} not defined')
+            print(f'🔴 Erorr: Action {parser.command} not defined')
             return 
         
         if len(parser.args) == 0:
-            print(f'Error: This action requires values. Non provided')
+            print(f'🔴 Error: This action requires values. Non provided')
             return
         
 
