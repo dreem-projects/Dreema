@@ -44,19 +44,19 @@ class AppContext:
             import endpoints
             routes = getattr(endpoints, 'routes', [])
             cls._routes = Dispatcher.initRoutes(routes=routes)
-            print(f'==> ✔️ {len(cls._routes["statics"]) + len(cls._routes["dynamics"])} routes loaded')
+            print(f'==> 🟢 {len(cls._routes["statics"]) + len(cls._routes["dynamics"])} routes loaded')
             
         except Exception as e:
-            print("=> ❌ Dreema startup failed: unable to load application endpoints.")
+            print("=> 🔴 Dreema startup failed: unable to load application endpoints.")
             raise e
 
 
         cls._db = Database()
         db = await cls._db.connect()
         if db.status < 0:
-            print(f'==> ❌ Database connection failed: {db.message}')
+            print(f'==> 🔴 Database not connected')
         else:
-            print(f'==> ✔️ Database connected')
+            print(f'==> 🟢 Database connected')
         return cls
 
     @classmethod

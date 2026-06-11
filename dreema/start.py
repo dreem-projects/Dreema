@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 import uvicorn
 from dreema.helpers import settings
 import socket, sys
@@ -25,7 +24,7 @@ class RunHandler:
         
         # get the command to perform
         self.params = {
-            "port": parser.kwargs.get('port', 8888),
+            "port": parser.kwargs.get('port', settings('SERVER_PORT', 8888)),
             "host": parser.kwargs.get('host', '127.0.0.1'),
             "reload": parser.kwargs.get('reload', True),
             "logLevel": parser.kwargs.get('log_level', 'info'),
@@ -50,6 +49,8 @@ class RunHandler:
     
     def run(self):
         try:
+
+            print(f'🟢 Starting server on port {self.params["port"]}...')
             port = self.findAvailablePort(int(self.params['port']))
             if port != int(self.params['port']):
                 print(f"🔴 Port {self.params['port']} is already in use")
@@ -62,7 +63,7 @@ class RunHandler:
                f"dreema.index:app",
                 port=port,
                 host=self.params['host'],
-                reload= False if str(settings("environment")) == 'live' else (self.params["reload"] == "True"),
+                reload= False if str(settings("environment")) == 'live' else self.params.get('reload', True),
                 workers=int(self.params['workers']),
                 log_level=self.params["logLevel"],
             )

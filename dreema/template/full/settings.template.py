@@ -29,6 +29,6 @@ CORS = {
 
 # files settings
 FILES = {
-    "maxUploadSize": 10,
+    "maxUploadSize": 10, #size in bytes
     "allowedFiles": ["pdf"]
 }

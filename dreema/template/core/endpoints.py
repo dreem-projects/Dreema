@@ -5,7 +5,7 @@
 
 from dreema.routing import route   
 
-async def create():
+async def userRead():
     return {
         'data': {
             'name': 'Kweku Dreem'
@@ -18,10 +18,10 @@ async def create():
 # define your route here
 routes = [
         # get, post, put, delete
-        route.get('/',create),
+        route.get('/',userRead),
         
         # declaring multiple routes
         route.group('/users', [
-            route.get('/create', create)
+            route.get('/create', userRead)
         ]),
 ]

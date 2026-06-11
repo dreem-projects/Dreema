@@ -8,7 +8,7 @@ from controllers.usersController import UsersController
  
 
 # routes can also be defined this way
-async def create():
+async def userRead():
     return {
          'data': {
             'name': 'Kweku Dreem'
@@ -21,7 +21,7 @@ async def create():
 routes = [
         # creating single routes
         route.get('/welcome', UsersController.welcome),
-        route.post('/create', create),
+        route.get('/create', userRead),
 
         # create grouped routes
         route.group('/users', [

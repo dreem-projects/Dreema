@@ -42,6 +42,10 @@ class CreateHandler:
         commands = parser.command.split('-')[1:]
         allowedCmd = ["model", "controller", "view", 'project']
 
+        if len(commands) == 0:
+            print(f'🔴 Erorr: Action {parser.command} not defined')
+            return 
+
         # validate the command
         if commands[0] not in allowedCmd:
             print(f'🔴 Erorr: Action {parser.command} not defined')
@@ -100,6 +104,9 @@ class CreateHandler:
                 for file in files:
                     src_file = Path(root) / file
                     dest_file = dest_path / file
+
+                    dest_filename = ".env" if file == "env.template" else file
+                    dest_file = dest_path / dest_filename
                     
                     # Only copy if the file does NOT exist in the destination
                     if not dest_file.exists():
@@ -122,6 +129,23 @@ class CreateHandler:
                 print('Files updated')
                 
             if not exists:
+                
+                if self.mode == "full":
+                    with open(destination / ".env", "w") as f:
+                        f.write("""# can be changed in settings.py
+ENVIRONMENT=local
+SERVER_PORT=8000
+
+# default db settings
+DB_TYPE=mongo
+DB_HOST=localhost
+DB_PORT=27017
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+"""
+                    )
+
                 subprocess.run(["git", "init"], cwd=destination)
                 print(f"🟢 : New Project {self.name if self.name != '.' else ''} created and Git initialized!")
 
@@ -244,8 +268,8 @@ class CommandsHandler:
 
                 if glb != config.version:
                     usr = config.version
-                    print(f'✔️ Your current Dreema version: {usr}')
-                    print(f'✔️ Upgrading to the latest version: {glb}')
+                    print(f'-> Your current Dreema version: {usr}')
+                    print(f'-> Upgrading to the latest version: {glb}')
                     user_v = int(usr.split('.')[0])
                     glb_v = int(glb.split('.')[0])
 

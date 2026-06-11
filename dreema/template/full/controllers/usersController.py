@@ -6,7 +6,7 @@ from models.usersModel import UsersModel
 class UsersController:
 
     @staticmethod
-    async def welcome(request: Request):
+    async def welcome():
         return response(message="Setup completed", status=SysCodes.SETUP_COMPLETED)
 
     @staticmethod
@@ -16,7 +16,7 @@ class UsersController:
         return await mod.create(body.data)
 
     @staticmethod
-    async def testRead(request: Request):
+    async def testRead():
         # read all samples  
         mod = UsersModel()
         return await mod.read(params={'include':['name'], 'limit':5, 'skip':1, 'sort': 1, 'sortfield':'name'})
