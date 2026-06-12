@@ -3,3 +3,6 @@ __pycache__/
 dreema.egg-info/
 dist
 version
+venv
+build
+.DS_Store
