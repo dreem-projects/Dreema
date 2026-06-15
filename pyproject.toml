@@ -1,7 +1,7 @@
 [project]
 name = "dreema"
-version = "0.1.0"
-description = "A high-speed, production-proven Python backend framework with built-in ORM, security, and native AI integration support."
+version = "0.1.1"
+description = "Dreema: Your first Python backend framework built for structural certainty, predictable scalability, and effortless AI agent integration."
 authors = [
   { name = "Raphael Djangmah", email = "ordjangmah@gmail.com" }
 ]

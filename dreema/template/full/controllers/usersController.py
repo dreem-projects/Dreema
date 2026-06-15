@@ -23,7 +23,7 @@ class UsersController:
 
     @staticmethod
     async def testUpdate(request: Request):
-        body = await request.trimApplyRules({
+        body = await request.applyRules({
             'id': 'required',
             'name':'required',
         })

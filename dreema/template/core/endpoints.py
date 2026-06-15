@@ -4,24 +4,29 @@
 """
 
 from dreema.routing import route   
+from dreema.responses import SysCodes, response, SysMessages
 
 async def userRead():
-    return {
+    {
         'data': {
-            'name': 'Kweku Dreem'
+            'name': 'Qweku Dreem'
         },
         "message": "Message sent",
         "status": 20
     }
 
+async def welcome():
+    # using standard response envelope
+    return response(data=None, message=SysMessages.SETUP_COMPLETED, status=SysCodes.SETUP_COMPLETED)
+
 
 # define your route here
 routes = [
-        # get, post, put, delete
-        route.get('/',userRead),
+        # get, post, put, delete for single routes
+        route.get('/',welcome),
         
-        # declaring multiple routes
+        # grouping multiple routes
         route.group('/users', [
-            route.get('/create', userRead)
+            route.get('/read', userRead)
         ]),
 ]
