@@ -52,7 +52,7 @@ class CreateHandler:
             return 
         
         if len(parser.args) == 0:
-            print(f'🔴 Error: This action requires values. Non provided')
+            print(f'🔴 Error: This action requires values. None provided')
             return
         
 

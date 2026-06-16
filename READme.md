@@ -17,16 +17,22 @@
   • Structure • Consistency • AI-ready systems
 </p>
 
+<p style="margin-top:1rem;">
+<a href="https://discord.gg/fTkjpq4Epm" style="color:#563d7c; text-decoration: underline; font-weight:bold;">
+  <u>Join Our Community</u>
+</a>
+</p>
+
 <div align="left" style="max-width:720px; margin:0 auto; font-size:1.1rem; line-height:1.7;">
-<p>
-    <b>The current bottleneck in AI development isn't the AI—it’s the architecture.</b>
+<div style="padding: 20px; border-left: 4px solid #563d7c;">
+  <b>The bottleneck in AI-assisted development isn't the AI—it’s the architecture on which it is forced to build.</b>
+  <p >
+    Traditional frameworks rely on "magic" and hidden side effects that results in fragile, unmaintainable code. <b>Dreema</b> replaces this chaos with <b>structural certainty</b>. 
   </p>
   <p>
-    While Large Language Models are exceptional at generating code, the systems they produce are often fragile, inconsistent, and difficult to maintain. Traditional frameworks were built for human-centric workflows, relying on deep tribal knowledge, complex boilerplate, and hidden side effects that confuse AI agents.
+    By enforcing a deterministic MVC pattern and a universal response contract across all internal function as well as ready to use ORM, plugs, middlewares, etc, Dreema provides the clarity developers need to build, and the predictable interface AI agents require to scale systems reliably.
   </p>
-  <p>
-    When frameworks prioritize "magic" over predictability, AI agents struggle to generate code that is production-ready.
-  </p>
+</div>
   
 </div>
 </div>
@@ -38,33 +44,226 @@
 </h1>
 
 <p>
-    <b>Dreema is a paradigm shift:</b> A Python framework architected specifically to be <i>AI-native</i>. By enforcing strict, predictable design patterns and standardized interfaces, Dreema ensures that AI-generated code is robust, modular, and natively compatible with automated workflows.
+    <b>Dreema is a paradigm shift:</b> A Python framework architected specifically to write scalable and support AI-assistive development. By enforcing strict, predictable design patterns and standardized interfaces, Dreema ensures that developers and AI-generated code is robust, modular, and natively compatible with automated workflows.
   </p>
-  <p>
-    <b>Stop fighting your framework. Start building with a foundation designed for the future of development using:
-    </b>
-  </p>
-
-- **Dreem's batteries-included** ecosystem featuring ORMs, Middlewares, Plugs, etc.
-- **Enforced Architecture:** Replaces flexible chaos with a deterministic MVC structure.
-- **Universal Error Contract:** Delivers standardized responses that AI agents can reliably parse, debug, and self-heal.
-- **Native AI tools:** Provides developers with AI tools for better developer experience.
-- **Predictable Roadmap:** Provides the structural clarity AI needs to build, maintain, and scale systems with confidence.
 
 ---
+
+<h1 style="margin-top: 10px; font-weight:500; font-size: 1.5rem; color:#563d7c;">
+  Build production ready endpoints
+</h1>
+
+**Setup and Installation**
+
+```bash
+# setup and activate virtual environment
+python -m venv venv
+source venv/bin/activate
+
+#install dreema
+pip install dreema
+
+```
+
+### Choose Your Style
+
+<div>Building high-performance endpoints with Dreema is designed to be intuitive. Choose the approach that fits your project needs.</div>
+
+## Style A - Core Mode (Minimalistic)
+
+Best for microservices or simple API routes. This setup provides a single entry point for all your logic.
+
+⚠️ Best for rapid prototyping and micro-services; transition to Full Mode for production-grade scalability."
+
+**Create a project**
+
+```bash create dreema project: set --mode to core or full
+dreema create-project <project_name> --mode core
+cd <project_name>
+
+dreema run
+```
+
+**Test in browser or curl**
+
+````bash
+curl -X POST http://localhost:<port/>
+
+#Response — always this shape, (data, message and status)
+
+```json
+{
+  "data": Null,
+  "message": "Welcome",
+  "status": 100
+}
+````
+
+#### Project Structure
+
+**endpoint**
+Adjust this file according to your needs and register all functions into the _routes_ array
+
+```python
+# app/view/endpoint.py
+from dreema.routing import route
+from dreema.responses import SysCodes, response, SysMessages
+
+async def userRead():
+    {
+        'data': {
+            'name': 'Qweku Dreem'
+        },
+        "message": "Message sent",
+        "status": 20
+    }
+
+async def welcome():
+    # using standard response envelope
+    return response(data=None, message=SysMessages.SETUP_COMPLETED, status=SysCodes.SETUP_COMPLETED)
+
+
+# define your route here
+routes = [
+        # get, post, put, delete for single routes
+        route.get('/',welcome),
+
+        # grouping multiple routes
+        route.group('/users', [
+            route.get('/read', userRead)
+        ]),
+]
+```
+
+---
+
+## Style B - Full mode (Recommended)
+
+<p style="margin-top: 10px; font-weight:200; font-size: 1.5rem; color:#56397c;">
+Perform Database Operations in seconds
+</p>
+
+#### Setup and run
+
+```bash create dreema project: --mode full (by default)
+#
+dreema create-project <project_name>
+cd <project_name>
+
+#run the project
+dreema run
+```
+
+### Project Structure
+
+#### add database details in .env
+
+```bash
+  # default db settings
+  DB_TYPE=mongo
+  DB_HOST=
+  DB_PORT=
+  DB_NAME=
+  DB_USER=
+  DB_PASSWORD=
+
+```
+
+#### models
+
+```python
+# app/models/user.py
+from dreema.orm import database
+
+class UserModel(database.Database):
+    # change tablename here
+    tablename = 'users'
+```
+
+```bash
+# terminal command to creating more models
+dreema create-model <controller_name>
+```
+
+#### controllers
+
+```python
+# app/controllers/users.py
+from dreema import Request
+from app.models.user import UsersModel
+
+class UsersController:
+
+  @staticmethod
+  async def createUser(request: Request):
+      # Validate the incoming body
+      body = await request.applyRules({
+          "name": "string,required",
+          "email": "email,required"
+      })
+
+      # Short-circuit on validation failure
+      if body.status < 0:
+          return body
+
+      # Create the record
+      model = UsersModel()
+      user = await User.create({
+          "name": body.data.name,
+          "email": body.data.email,
+      })
+
+      return user
+```
+
+```bash
+# terminal command to creating more controllers
+dreema create-controller <controller_name>
+```
+
+#### views
+
+_Empty by default_
+
+#### Register routes into endpoint
+
+```python
+#endpoint.py
+
+from dreema.routing import route
+from controllers.usersController import UsersController
+
+
+# defining all routes coming from the controllers
+routes = [
+        # creating single routes
+        route.get('/welcome', UsersController.welcome),
+
+        # create grouped routes
+        route.group('/users', [
+            route.get('/read', UsersController.testRead),
+            route.post('/create', UsersController.testCreate)
+        ]),
+
+        # routes with multiple methods
+        route(path="/", methods=["GET", "POST"], handler=UsersController.welcome),
+]
+
+```
 
 <h1 style="margin-top: 10px; font-weight:600; font-size: 1.2rem; color:#563d7c;">
   Our Vision
 </h1>
 Dreema aims to redefine backend development by prioritizing both human intuition and AI efficiency. We provide the tools and structured architecture needed to build, maintain, and scale reliable backends that work seamlessly for both developers and AI agents.
 
-<h1 style="margin-top: 10px; font-weight:600; font-size: 1.2rem; color:#563d7c;">
+<h1 style="margin-top: 40px; font-weight:600; font-size: 1.2rem; color:#563d7c;">
   Our Core Architecture
 </h1>
 
-<div style=" font-size:0.8rem; line-height:1.7;">
+<div>
 
-<h3 style="color:#563d7c;">1.  Enforced MVC Architecture</h3>
+### 1. Enforced MVC Architecture</h3>
+
 FastAPI is excellent for prototypes, but it lacks structural enforcement — leading to spaghetti code at scale. Dreema mandates a clean <b>Model-View-Controller</b> structure from day one leading to
 <b>Zero Guesswork and AI Efficient </b> as developers and AI agents know where to look.
 
@@ -73,7 +272,7 @@ FastAPI is excellent for prototypes, but it lacks structural enforcement — lea
 
 ---
 
-<h3 style="color:#563d7c;">2 . The Universal Response Contract</h3>
+### 2 . The Universal Response Contract</h3>
 
 System fragility is the enemy of automation. Dreema implements a strict, fixed response schema for every request — internal or external. This provides a predictable contract that AI agents can rely on to diagnose, debug, and self-heal.
 
@@ -112,7 +311,7 @@ No controller-specific error formats. No guessing what shape a failure takes. Ev
 
 ---
 
-<h3 style="color:#563d7c;">3 . Unified ORM</h3>
+### 3 . Unified ORM</h3>
 
 Stop scaffolding database connections by hand. Dreema includes a powerful, database-agnostic ORM that lets you switch between storage engines.
 
@@ -120,192 +319,22 @@ Stop scaffolding database connections by hand. Dreema includes a powerful, datab
 
 **Abstraction Done Right** &nbsp;—&nbsp; Dreema manages connections and dialect differences so you focus on your application.
 
----
-
-<h1 style="margin-top: 10px; font-weight:600; font-size: 1.5rem; color:#563d7c;">
-  Demo: Perform CRUD in 60seconds
-</h1>
-
-**Setup and Installation**
-
-```bash
-# setup and activate virtual environment
-python -m venv venv
-source venv/bin/activate
-
-#install dreema
-pip install dreema
-
-```
-
-### Choose Your Style
-
-<div>Building high-performance endpoints with Dreema is designed to be intuitive. Choose the approach that fits your project needs.</div>
-
-## Style A - Core Mode (Minimalistic)
-
-Best for microservices or simple API routes. This setup provides a single entry point for all your logic.
-
-⚠️ Warning: Not recommended for production; lacks the modularity needed for maintainable, scalable systems.
-
-**Create a project**
-
-```bash create dreema project: set --mode to core or full
-dreema create project_name --mode core
-cd project_name
-```
-
-**Create and define routes inside endpoint.py**
-
-```python
-
-  from dreema.routing import route
-  from controllers.usersController import UsersController
-
-  # routes can also be defined this way
-  async def create():
-      return {
-          'data': {
-              'name': 'Kweku Dreem'
-          },
-          "message": "Message sent",
-          "status": 20
-      }
-
-  async def welcome():
-      return "Welcome to Dreema"
-
-  # register created route
-  routes = [
-          # creating single routes
-          route.get('/welcome', welcome),
-          route.post('/create', create),
-  ]
-
-```
-
-**Start the server**
-
-```bash
-  dreema run .
-```
-
-## Style B - Installing with full mode (Recommended)
-
-**Step 1 &mdash; Create your model**
-
-```bash
-dreema create-model userModel
-```
-
-```python
-# app/models/user.py
-from dreema.orm import database
-
-class UserModel(database.Database):
-    # change tablename here
-    tablename = 'users'
-```
-
-**Step 2 &mdash; Create your controller**
-
-```bash
-dreema create-controller usersController
-```
-
-```python
-# app/controllers/users.py
-from dreema import Request
-from app.models.user import UsersModel
-
-class UsersController:
-
-  @staticmethod
-  async def createUser(request: Request):
-      # Validate the incoming body
-      body = await request.apply_rules({
-          "name": "string,required",
-          "email": "email,required"
-      })
-
-      # Short-circuit on validation failure
-      if body.status < 0:
-          return body
-
-      # Create the record
-      model = UsersModel()
-      user = await User.create({
-          "name": body.data.name,
-          "email": body.data.email,
-      })
-
-      return user
-```
-
-**Step 2 &mdash; Register endpoint**
-
-```python
-# app/view/endpoint.py
-from dreema.routing import route, routegroup
-import controllers.users as UsersController
-
-"""
-        author:  Raphael Djangmah
-        Use:
-                This file is the main view entry.
-"""
-routes = [
-        # creating single routes
-        route.post('/create-user', UsersController.createUser),
-  ]
-```
-
-**Step 5 &mdash; Start the server**
-
-```bash
-  dreema run .
-```
-
-**Step 6 &mdash; Call the endpoint**
-
-```bash
-curl -X POST http://localhost:8000/create-user \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Jane Doe", "email": "jane@example.com"}'
-```
-
-<b>Response — always this shape, always.</b>
-
-- If validation failed
-
-```json
-{
-  "data": Null,
-  "message": "Attribute is missing",
-  "status": -30
-}
-```
-
-- If validation succeeded
-
-```json
-{
-  "data": { "id": 1, "name": "Jane Doe", "email": "jane@example.com" },
-  "message": "Create operation successful",
-  "status": 22
-}
-```
-
 Routing, validation, ORM, and response formatting — all handled, all consistent.
+Dreema is the new age backend framework that combines into one the:
 
+- Structure of Laravel
+- Speed of FastAPI
+- Battery inclusion of Django
+- Comfort of Express.js
+- Professionalism of Springboot
+- etc
 <div align="center">
 
-<img src="https://img.shields.io/badge/Dreema-Convention%20Over%20Configuration-563d7c?style=for-the-badge" alt="Convention Over Configuration" />
-
-<!-- <p style="margin-top:1rem;">
-<a href="https://dreem-projects.github.io/dq-docs/v1/" style="color:#563d7c; font-weight:bold;">View Full Documentation</a>
+<p style="margin-top:1rem;">
+<a href="https://discord.gg/fTkjpq4Epm" style="color:#563d7c; font-weight:bold;">Join our discord community</a>
 &nbsp;·&nbsp;
-<a href="v1/" style="color:#563d7c; font-weight:bold;">Current Version (v1)</a>
-</p> -->
+<a href="https://dreem-projects.github.io/dq-docs/v1/" style="color:#563d7c; font-weight:bold;">Full documentation</a>
+</p>
 
+<img src="https://img.shields.io/badge/Dreema-Convention%20Over%20Configuration-563d7c?style=for-the-badge" alt="Convention Over Configuration" />
 </div>

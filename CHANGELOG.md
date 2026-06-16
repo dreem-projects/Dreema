@@ -79,3 +79,9 @@ The format is based on Keep a Changelog and follows Semantic Versioning.
 
 - This release establishes the core architecture and development workflow for Dreema.
 - Future releases will focus on validation, middleware, caching, scheduling, storage management, testing utilities, and package distribution.
+
+## [0.1.1] - 2026-06-15
+
+### Changed
+
+- **README**: Refined architectural philosophy section and streamlined setup instructions for better clarity.

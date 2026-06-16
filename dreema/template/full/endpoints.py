@@ -7,26 +7,15 @@ from dreema.routing import route
 from controllers.usersController import UsersController
  
 
-# routes can also be defined this way
-async def userRead():
-    return {
-         'data': {
-            'name': 'Kweku Dreem'
-        },
-        "message": "Message sent",
-        "status": 20
-    }
-
-# routes
+# defining all routes coming from the controllers
 routes = [
         # creating single routes
         route.get('/welcome', UsersController.welcome),
-        route.get('/create', userRead),
 
         # create grouped routes
         route.group('/users', [
-            route.get('/read', UsersController.welcome),
-            route.post('/create', UsersController.testRead)
+            route.get('/read', UsersController.testRead),
+            route.post('/create', UsersController.testCreate)
         ]),
 
         # routes with multiple methods
